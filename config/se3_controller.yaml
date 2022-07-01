@@ -1,0 +1,12 @@
+motor_params:
+  a: 0.77522
+  b: -1.2348
+
+mass: 2.0 # [kg]
+g: 9.8 # [ms^-2]
+
+gains:
+  position: 6.0
+  velocity: 5.0
+  rotation: 4.5
+  rate: 0.025

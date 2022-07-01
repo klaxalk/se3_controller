@@ -1,0 +1,17 @@
+<launch>
+
+  <arg name="UAV_NAME" default="$(env UAV_NAME)" />
+
+  <group ns="$(arg UAV_NAME)">
+
+    <node name="se3_controller" pkg="se3_controller" type="se3_controller.py" output="screen">
+
+      <rosparam file="$(find se3_controller)/config/se3_controller.yaml" />
+
+      <remap from="~actuator_control_srv_in" to="control_manager/motor_controller/actuator_control_srv" />
+
+    </node>
+
+  </group>
+
+</launch>
