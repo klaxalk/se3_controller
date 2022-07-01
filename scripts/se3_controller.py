@@ -72,7 +72,7 @@ class ActuatorController:
 
         # desired thrust
         des_F_scalar = des_F.dot(R[:, 2])
-        des_thrust = math.sqrt(des_F_scalar / 4.0) * self.motor_param_A + self.motor_param_B
+        des_thrust = math.sqrt(des_F_scalar / self.n_motors) * self.motor_param_A + self.motor_param_B
 
         # control group commands
         controls = np.array([gain_rate * err_rate[0],
@@ -115,6 +115,7 @@ class ActuatorController:
         self.g = rospy.get_param("~g")
         self.motor_param_A = rospy.get_param("~motor_params/a")
         self.motor_param_B = rospy.get_param("~motor_params/b")
+        self.n_motors = rospy.get_param("~motor_params/n_motors")
 
         self.service_server = rospy.Service("~actuator_control_srv_in", ActuatorControl, self.actuatorControlCallback)
 
