@@ -1,9 +1,9 @@
 motor_params:
-  a: 0.77522
-  b: -1.2348
+  a: 0.31551
+  b: -0.15
   n_motors: 4
 
-mass: 2.1 # [kg]
+mass: 2.0 # [kg]
 g: 9.8 # [ms^-2]
 
 gains:
