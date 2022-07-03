@@ -3,11 +3,11 @@ motor_params:
   b: -1.2348
   n_motors: 4
 
-mass: 2.0 # [kg]
+mass: 2.1 # [kg]
 g: 9.8 # [ms^-2]
 
 gains:
-  position: 6.0
-  velocity: 5.0
-  rotation: 4.5
+  position: 3.0
+  velocity: 3.0
+  rotation: 4.0
   rate: 0.025

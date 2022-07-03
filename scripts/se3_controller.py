@@ -60,7 +60,7 @@ class ActuatorController:
         err_R = 0.5 * (des_R.transpose().dot(R) - R.transpose().dot(des_R))
         err_R_vec = -np.array([0.5 * (err_R[2, 1] - err_R[1, 2]),
                                0.5 * (err_R[0, 2] - err_R[2, 0]),
-                               0.5 * (err_R[1, 0] - err_R[0, 1])]) 
+                               0.5 * (err_R[1, 0] - err_R[0, 1])])
 
         # desired angular rate
         des_rate = gain_rot * err_R_vec
@@ -95,6 +95,12 @@ class ActuatorController:
         response.motors[1] = motors[1]
         response.motors[2] = motors[2]
         response.motors[3] = motors[3]
+
+        # desired acceleration
+
+        response.desired_acceleration.x = (des_F[0] / self.mass)
+        response.desired_acceleration.y = (des_F[1] / self.mass)
+        response.desired_acceleration.z = (des_F[2] / self.mass) - self.g
 
         rospy.loginfo('outputting motor commands: {} {} {} {}'.format(motors[0], motors[1], motors[2], motors[3]))
 
