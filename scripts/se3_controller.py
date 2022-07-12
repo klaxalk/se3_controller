@@ -21,14 +21,14 @@ class ActuatorController:
         gain_rate = self.gain_rate * self.mass
 
         # position control error
-        err_pos = np.array([data.reference.position.x - data.uav_state.pose.position.x,
-                            data.reference.position.y - data.uav_state.pose.position.y,
-                            data.reference.position.z - data.uav_state.pose.position.z])
+        err_pos = np.array([data.request.reference.position.x - data.request.uav_state.pose.position.x,
+                            data.request.reference.position.y - data.request.uav_state.pose.position.y,
+                            data.request.reference.position.z - data.request.uav_state.pose.position.z])
 
         # velocity control error
-        err_vel = np.array([data.reference.velocity.x - data.uav_state.velocity.linear.x,
-                            data.reference.velocity.y - data.uav_state.velocity.linear.y,
-                            data.reference.velocity.z - data.uav_state.velocity.linear.z])
+        err_vel = np.array([data.request.reference.velocity.x - data.request.uav_state.velocity.linear.x,
+                            data.request.reference.velocity.y - data.request.uav_state.velocity.linear.y,
+                            data.request.reference.velocity.z - data.request.uav_state.velocity.linear.z])
 
         # gravity compensation vector
         gravity_comp = np.array([0,
@@ -40,8 +40,8 @@ class ActuatorController:
         des_F_normalized = des_F / np.linalg.norm(des_F)
 
         # desired heading vec
-        des_heading_vec = np.array([math.cos(data.reference.heading),
-                                    math.sin(data.reference.heading),
+        des_heading_vec = np.array([math.cos(data.request.reference.heading),
+                                    math.sin(data.request.reference.heading),
                                     0])
 
         # desired orientation matrix
@@ -54,7 +54,7 @@ class ActuatorController:
         des_R[:, 0] = des_R[:, 0] / np.linalg.norm(des_R[:, 0])
 
         # orientation error
-        orient_quat = Quaternion(data.uav_state.pose.orientation.w, data.uav_state.pose.orientation.x, data.uav_state.pose.orientation.y, data.uav_state.pose.orientation.z)
+        orient_quat = Quaternion(data.request.uav_state.pose.orientation.w, data.request.uav_state.pose.orientation.x, data.request.uav_state.pose.orientation.y, data.request.uav_state.pose.orientation.z)
         R = orient_quat.rotation_matrix
 
         err_R = 0.5 * (des_R.transpose().dot(R) - R.transpose().dot(des_R))
@@ -66,9 +66,9 @@ class ActuatorController:
         des_rate = gain_rot * err_R_vec
 
         # rate error
-        err_rate = np.array([des_rate[0] - data.uav_state.velocity.angular.x,
-                             des_rate[1] - data.uav_state.velocity.angular.y,
-                             des_rate[2] - data.uav_state.velocity.angular.z])
+        err_rate = np.array([des_rate[0] - data.request.uav_state.velocity.angular.x,
+                             des_rate[1] - data.request.uav_state.velocity.angular.y,
+                             des_rate[2] - data.request.uav_state.velocity.angular.z])
 
         # desired thrust
         des_F_scalar = des_F.dot(R[:, 2])
@@ -91,20 +91,20 @@ class ActuatorController:
 
         response = ActuatorControlResponse()
 
-        response.motors[0] = motors[0]
-        response.motors[1] = motors[1]
-        response.motors[2] = motors[2]
-        response.motors[3] = motors[3]
+        response.response.motors[0] = motors[0]
+        response.response.motors[1] = motors[1]
+        response.response.motors[2] = motors[2]
+        response.response.motors[3] = motors[3]
 
         # desired acceleration
 
-        response.desired_acceleration.x = (des_F[0] / self.mass)
-        response.desired_acceleration.y = (des_F[1] / self.mass)
-        response.desired_acceleration.z = (des_F[2] / self.mass) - self.g
+        response.response.desired_acceleration.x = (des_F[0] / self.mass)
+        response.response.desired_acceleration.y = (des_F[1] / self.mass)
+        response.response.desired_acceleration.z = (des_F[2] / self.mass) - self.g
 
         rospy.loginfo('outputting motor commands: {} {} {} {}'.format(motors[0], motors[1], motors[2], motors[3]))
 
-        response.success = True
+        response.response.success = True
 
         return response
 
